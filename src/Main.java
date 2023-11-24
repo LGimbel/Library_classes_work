@@ -1,3 +1,4 @@
+
 import java.util.*;
 
 
@@ -7,15 +8,14 @@ public class Main {
         Scanner input = new Scanner(System.in);
         Map<String, Map<String,Object>> Catalog = new HashMap<>();
         System.out.println("Hello world!");
-        branch.librarian.AddBook(Catalog, input );
-        branch.librarian.GetLibraryStatus(Catalog);
+        UserInterface(input,Catalog);
+
 
     }
     
     public static class branch{
-        Map<String, Map<String,Object>> Catalog = new HashMap<>();
         static class Patron extends branch {
-            static void VeiwALlAvalable(Map<String, Map<String, Object>> Catalog) {
+            static void ViewAllAvailable(Map<String, Map<String, Object>> Catalog) {
                 List<String> books = branch.librarian.BooksIn(Catalog);
                 System.out.println("The books currently available are:");
                 for (String title : books) {
@@ -208,5 +208,96 @@ public class Main {
             }
        }
 
+    }
+    static  void PatronUserInterface(Scanner input,Map<String, Map<String, Object>> Catalog){
+        //region string
+        String UIMessage = "Welcome to the Library. What would you like to do? \n1: View all available titles. \n2: Check out a book. \n3: Check in a book. please select the chosen action by entering the corresponding number";
+        //endregion
+        System.out.println(UIMessage);
+        String ChosenAction = input.nextLine();
+        switch (ChosenAction){
+            case "1":
+                branch.Patron.ViewAllAvailable(Catalog);
+                break;
+            case "2":
+                branch.Patron.CheckOut(Catalog, input);
+                break;
+            case "3":
+                branch.Patron.CheckIn(Catalog,input);
+                break;
+            default:
+                System.out.println("it appears that you entered, "+ ChosenAction +" which is not an available action please try again.");
+                PatronUserInterface(input,Catalog);
+                break;
+        }
+        System.out.println("Would you like to do anything else? Y/N");
+        String again = input.nextLine();
+        if (again.equals("y")||again.equals("Y")){
+            PatronUserInterface(input,Catalog);
+        }
+        else {
+            System.out.println("Thank you for using the library system have a nice day");
+
+        }
+    }
+    static void UserInterface (Scanner input,Map<String, Map<String, Object>> Catalog){
+        System.out.println("are you a patron? Y/N");
+        String patronQuery = input.nextLine();
+        if (patronQuery.equals("Y")||patronQuery.equals("y")){
+            PatronUserInterface(input,Catalog);
+        }
+        else{
+            System.out.println("You have selected librarian is that correct. Y/N");
+            String LibrarianCorQuery = input.nextLine();
+            if (LibrarianCorQuery.equals("Y") || LibrarianCorQuery.equals("y")){
+                LibrarianUserInterface(input,Catalog);
+            } else {
+                System.out.println("Please start again.");
+                UserInterface(input, Catalog);
+
+
+            }
+        }
+
+    }
+    static  void LibrarianUserInterface(Scanner input,Map<String, Map<String, Object>> Catalog){
+        //region string
+        String UIMessage = "Welcome to the Library. What would you like to do? \n1: add book. \n2: See all checked in books. \n3: Get Branch status, show all titles and whether they are in or out.\n4: See all books currently checked out. \n5: count all total books in the catalog. \nplease select the chosen action by entering the corresponding number";
+        //endregion
+        System.out.println(UIMessage);
+
+        String ChosenAction = input.nextLine();
+        switch (ChosenAction){
+            case "1":
+                branch.librarian.AddBook(Catalog,input);
+                break;
+            case "2":
+               System.out.println(branch.librarian.BooksIn(Catalog));
+                break;
+            case "3":
+                branch.librarian.GetLibraryStatus(Catalog);
+                break;
+            case "4":
+                System.out.println(branch.librarian.BooksOut(Catalog));
+                break;
+            case "5":
+                System.out.println(branch.librarian.GetTotalBooks(Catalog));
+                break;
+
+            default:
+                System.out.println("it appears that you entered, "+ ChosenAction +" which is not an available action please try again.");
+                LibrarianUserInterface(input,Catalog);
+                break;
+        }
+        System.out.println("Would you like to do anything else? Y/N");
+        String again = input.nextLine();
+        if (again.equals("y")||again.equals("Y")){
+            LibrarianUserInterface(input,Catalog);
+        }
+        else {
+            System.out.println("Thank you for using the library system have a nice day");
+            System.exit(295);
+
+        }
     }
     }
